@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     performance: {
@@ -14,7 +15,7 @@ module.exports = {
         path: path.resolve(__dirname, '../dist'),
         filename: '[name].[contenthash:8].js',
         chunkFilename: '[name].[contenthash:8].js',
-        publicPath: ''
+        publicPath: '/'
     },
     module: {
         rules: [
@@ -54,7 +55,14 @@ module.exports = {
                             },
                         },
                     },
-                    'less-loader'
+                    {
+                        loader: 'less-loader', 
+                        options: {
+                            lessOptions: {
+                                javascriptEnabled: true
+                            }
+                        }
+                    }
                 ],
             },
             {
@@ -92,6 +100,18 @@ module.exports = {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.json']
     },
     plugins: [
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, '../static'), 
+                    to: path.resolve(__dirname, '../dist'),
+                    filter: (resourcePath) => {
+                        return !/index\.html$/.test(resourcePath);
+                    },
+                    noErrorOnMissing: true
+                }
+            ]
+        }),
         // 注入webpack编译时js中的全局变量
         new webpack.DefinePlugin({
             'process.env.THEME': JSON.stringify(process.env.THEME)
@@ -105,10 +125,10 @@ module.exports = {
         // 自动注入js、css等入口资源生成html文件
         new HtmlWebpackPlugin({
             inject: true,
-            title: 'react webpack',
+            title: 'Ant Design Pro',
             filename: 'index.html',
-            template: 'index.html',
-            favicon: path.resolve(__dirname, '../favicon.ico')
+            template: path.resolve(__dirname, '../static/index.html'),
+            favicon: path.resolve(__dirname, '../static/favicon.ico')
         }),
     ]
 };
