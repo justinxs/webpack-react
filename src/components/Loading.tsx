@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function Loading(props: any) {
+    console.log('loading');
     if (props.error) {
         return <div>Error! <button onClick={ props.retry }>Retry</button></div>;
     } else if (props.timedOut) {
