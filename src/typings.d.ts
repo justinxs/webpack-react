@@ -12,3 +12,8 @@ declare module '*.jpeg'
 declare module '*.gif'
 declare module '*.webp'
 declare module '*.bmp'
+
+declare module '*.less'
+declare module '*.scss'
+declare module '*.css'
+declare module '*?modules'

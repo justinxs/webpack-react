@@ -1,5 +1,5 @@
-import '@/styles/App.css';
 import '@/styles/global.less';
+import formatMessage from '@/utils/formatMessage';
 import React from 'react';
 import createRouter from '@/routes';
 

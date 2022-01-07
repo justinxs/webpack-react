@@ -4,9 +4,18 @@ import { useRoutes } from "react-router-dom";
 import Layout from '@/components/Layout';
 import Loading from '@/components/Loading';
 import About from '@/pages/About';
-import NotFound from '@/pages/NotFound';
+import NoFoundPage from '@/pages/404';
+import Login from '@/pages/user/Login';
+
+
 
 const suspenseContainer = (Container: () => JSX.Element) => {
+    type stateType = {
+        hasError: boolean
+    }
+    interface ErrorBoundary {
+        state: stateType
+    }
     class ErrorBoundary extends React.Component {
         constructor(props: any) {
           super(props);
@@ -64,8 +73,9 @@ const createRouter = () => {
                 }
             ]
         },
+        { path: "/user/login", element: <Login /> },
         { path: "/about", element: <About /> },
-        { path: "*", element: <NotFound /> }
+        { path: "*", element: <NoFoundPage /> }
     ];
 
     return useRoutes(routes);

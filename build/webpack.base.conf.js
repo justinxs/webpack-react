@@ -28,42 +28,94 @@ module.exports = {
             },
             {
                 test: /\.(css|less)$/i,
-                use: [
+                oneOf: [
                     {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            // 相对路径，针对本地打开
-                            // publicPath: '../'
-                        }
-                    },
-                    {
-                        loader: "css-loader",
-                        options: { importLoaders: 1 },
-                    },
-                    {
-                        loader: "postcss-loader",
-                        options: {
-                            postcssOptions: {
-                                plugins: [
-                                    [
-                                        "autoprefixer",
-                                        {
-                                            // Options
-                                        },
-                                    ],
-                                ],
+                        resourceQuery: /modules/,
+                        use: [
+                            {
+                                loader: MiniCssExtractPlugin.loader,
+                                options: {
+                                    // 相对路径，针对本地打开
+                                    // publicPath: '../'
+                                }
                             },
-                        },
+                            {
+                                loader: "css-loader",
+                                options: {
+                                    importLoaders: 1,
+                                    modules: {
+                                        namedExport: false,
+                                        localIdentName: '[local]___[hash:base64:5]',
+                                        exportLocalsConvention: "camelCase",
+                                    }
+                                }
+                            },
+                            {
+                                loader: "postcss-loader",
+                                options: {
+                                    postcssOptions: {
+                                        plugins: [
+                                            [
+                                                "autoprefixer",
+                                                {
+                                                    // Options
+                                                },
+                                            ],
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                loader: 'less-loader', 
+                                options: {
+                                    lessOptions: {
+                                        javascriptEnabled: true
+                                    }
+                                }
+                            }
+                        ]
                     },
                     {
-                        loader: 'less-loader', 
-                        options: {
-                            lessOptions: {
-                                javascriptEnabled: true
+                        use: [
+                            {
+                                loader: MiniCssExtractPlugin.loader,
+                                options: {
+                                    // 相对路径，针对本地打开
+                                    // publicPath: '../'
+                                }
+                            },
+                            {
+                                loader: "css-loader",
+                                options: {
+                                    importLoaders: 1
+                                }
+                            },
+                            {
+                                loader: "postcss-loader",
+                                options: {
+                                    postcssOptions: {
+                                        plugins: [
+                                            [
+                                                "autoprefixer",
+                                                {
+                                                    // Options
+                                                },
+                                            ],
+                                        ],
+                                    },
+                                },
+                            },
+                            {
+                                loader: 'less-loader', 
+                                options: {
+                                    lessOptions: {
+                                        javascriptEnabled: true
+                                    }
+                                }
                             }
-                        }
+                        ]
                     }
-                ],
+                ]
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
