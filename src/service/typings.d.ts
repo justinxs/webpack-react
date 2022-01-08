@@ -99,3 +99,17 @@ declare namespace API {
     type?: NoticeIconItemType;
   };
 }
+
+interface StateType {
+    status?: 'ok' | 'error';
+    currentAuthority?: 'user' | 'guest' | 'admin';
+}
+
+interface UserRegisterParams {
+    mail: string;
+    password: string;
+    confirm: string;
+    mobile: string;
+    captcha: string;
+    prefix: string;
+}

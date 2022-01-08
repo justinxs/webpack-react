@@ -15,7 +15,7 @@ routes.forEach(({ method, path, action }) => {
     router[method](path, controllerInstance[cAction].bind(controllerInstance));
 });
 
-router.get(/(.*)/, async(ctx, next) => {
+router.get(/^(?!\/api)(.*)/, async(ctx, next) => {
     let resPath = path.resolve(__dirname, `../../dist/index.html`);
     ctx.type = 'html';
     return ctx.body = fs.createReadStream(resPath);
