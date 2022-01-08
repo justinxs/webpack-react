@@ -55,6 +55,11 @@ const Register: FC = () => {
         },
         [interval],
     );
+    useEffect(() => {
+        setTimeout(() => {
+            navigate('/user/login');
+        }, 3000);
+    }, []);
 
     const onGetCaptcha = () => {
         let counts = 59;

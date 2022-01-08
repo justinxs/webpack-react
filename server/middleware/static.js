@@ -11,4 +11,11 @@ const staticMiddleware = staticCache({
     files: files
 });
 
-module.exports = staticMiddleware;
+module.exports = async (ctx, next) => {
+    if (ctx.path.indexOf('src_pages_user_Login_index_tsx') > -1) {
+        await new Promise((resolve, reject) => {
+            setTimeout(resolve, 3000);
+        })
+    }
+    return staticMiddleware(ctx, next)
+};

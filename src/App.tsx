@@ -1,6 +1,6 @@
 import 'antd/dist/antd.css';
 import '@/styles/global.less';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import createRouter from '@/routes';
 import { ConfigProvider } from 'antd';
 import { RawIntlProvider } from 'react-intl';
@@ -14,6 +14,7 @@ import 'moment/locale/pt-br';
 import 'moment/locale/zh-cn';
 import 'moment/locale/zh-tw';
 import Loading from '@/components/Loading';
+import { PageLoading } from '@ant-design/pro-layout';
 
 type stateType = {
     hasError: boolean
@@ -72,9 +73,9 @@ export default function App() {
         <ConfigProvider direction={direction} locale={localeInfo[locale]?.antd || {}}>
             <RawIntlProvider value={intl}>
                 <ErrorBoundary>
-                    <React.Suspense fallback={<Loading />}>
+                    <Suspense fallback={<PageLoading />}>
                         {element}
-                    </React.Suspense>
+                    </Suspense>
                 </ErrorBoundary>
             </RawIntlProvider>
         </ConfigProvider>
