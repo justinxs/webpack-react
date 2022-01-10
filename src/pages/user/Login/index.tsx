@@ -9,13 +9,12 @@ import {
 import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useIntl, FormattedMessage } from 'react-intl';
 import Footer from '@/components/Footer';
 import SelectLang from '@/components/SelectLang';
-import { login } from '@/service/api';
+import { login, currentUser } from '@/service/api';
 import { getFakeCaptcha } from '@/service/login';
-import { currentUser } from '@/service/api';
 
 import styles from './index.less?modules';
 
@@ -38,7 +37,7 @@ const Login: React.FC = () => {
 
     const intl = useIntl();
     const navigate = useNavigate();
-    const query = useParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const fetchUserInfo = async () => {
         const userInfo = await currentUser();
@@ -58,8 +57,7 @@ const Login: React.FC = () => {
                 message.success(defaultLoginSuccessMessage);
                 await fetchUserInfo();
                 /** 此方法会跳转到 redirect 参数所在的位置 */
-                if (!query) return;
-                const { redirect } = query;
+                const redirect = searchParams.get('redirect');
                 navigate(redirect || '/');
                 return;
             }
@@ -89,6 +87,8 @@ const Login: React.FC = () => {
                     subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
                     initialValues={{
                         autoLogin: true,
+                        username: 'admin',
+                        password: 'ant.design',
                     }}
                     actions={[
                         <FormattedMessage key="loginWith" id="pages.login.loginWith" defaultMessage="其他登录方式" />,

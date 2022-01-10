@@ -2,7 +2,8 @@ import 'antd/dist/antd.css';
 import '@/styles/global.less';
 import React, { useState, useEffect, Suspense } from 'react';
 import createRouter from '@/routes';
-import { ConfigProvider } from 'antd';
+import { useLocation, useNavigate } from "react-router-dom";
+import { ConfigProvider, message } from 'antd';
 import { RawIntlProvider } from 'react-intl';
 import { getDirection, localeInfo, getLocale, getIntl, event, LANG_CHANGE_EVENT } from './locale';
 import moment from 'moment';
@@ -13,46 +14,19 @@ import 'moment/locale/ja';
 import 'moment/locale/pt-br';
 import 'moment/locale/zh-cn';
 import 'moment/locale/zh-tw';
-import Loading from '@/components/Loading';
 import { PageLoading } from '@ant-design/pro-layout';
-
-type stateType = {
-    hasError: boolean
-}
-interface ErrorBoundary {
-    state: stateType
-}
-class ErrorBoundary extends React.Component {
-    constructor(props: any) {
-      super(props);
-      this.state = { hasError: false };
-    }
-  
-    static getDerivedStateFromError(error: Error) {
-      // 更新 state 使下一次渲染能够显示降级后的 UI
-      return { hasError: true };
-    }
-  
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-      // 你同样可以将错误日志上报给服务器
-      console.log(error, errorInfo);
-    }
-  
-    render() {
-      if (this.state.hasError) {
-        // 你可以自定义降级后的 UI 并渲染
-        return <h1>Something went wrong.</h1>;
-      }
-  
-      return this.props.children; 
-    }
-}
+import { currentUser } from '@/service/api';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function App() {
+    const location = useLocation();
+    const navigate = useNavigate();
     const element = createRouter();
     const direction = getDirection();
     const [locale, setLocale] = useState(() => getLocale());
     const [intl, setContainerIntl] = useState(() => getIntl(locale, true));
+    const [isLogin, setIsLogin] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const handleLangChange = (locale:string) => {
         if (moment?.locale) {
@@ -64,13 +38,32 @@ export default function App() {
     
     useEffect(() => {
         event.on(LANG_CHANGE_EVENT, handleLangChange);
+        if (!isLogin) {
+            const loginPage = location.pathname === '/user/login';
+            
+            currentUser().then(data => {
+                if (data.data.userid) {
+                    setIsLogin(true);
+                    loginPage && navigate('/');
+                } else {
+                    if (!loginPage) {
+                        message.error(data.errorMessage);
+                        navigate('/user/login?redirect=' + location.pathname);
+                    }
+                }
+            }).catch(err => {
+                message.error(err.message);
+                !loginPage && navigate('/user/login?redirect=' + location.pathname)
+            }).finally(() => setLoading(false));
+        }
         return () => {
             event.off(LANG_CHANGE_EVENT, handleLangChange);
         };
     }, []);
 
     return (
-        <ConfigProvider direction={direction} locale={localeInfo[locale]?.antd || {}}>
+        !loading 
+        ? <ConfigProvider direction={direction} locale={localeInfo[locale]?.antd || {}}>
             <RawIntlProvider value={intl}>
                 <ErrorBoundary>
                     <Suspense fallback={<PageLoading />}>
@@ -79,5 +72,6 @@ export default function App() {
                 </ErrorBoundary>
             </RawIntlProvider>
         </ConfigProvider>
+        : <PageLoading />
     );
 }

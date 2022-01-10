@@ -12,10 +12,10 @@ const staticMiddleware = staticCache({
 });
 
 module.exports = async (ctx, next) => {
-    if (ctx.path.indexOf('src_pages_user_Login_index_tsx') > -1) {
-        await new Promise((resolve, reject) => {
-            setTimeout(resolve, 3000);
-        })
-    }
+    // if (ctx.path.indexOf('src_pages_Home') > -1) {
+    //     await new Promise((resolve, reject) => {
+    //         setTimeout(resolve, 3000);
+    //     })
+    // }
     return staticMiddleware(ctx, next)
 };

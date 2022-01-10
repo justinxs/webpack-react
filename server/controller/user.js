@@ -20,6 +20,16 @@ module.exports = class UserController {
     }
 
     async currentUser(ctx, next) {
+        if (!ctx.USER_NAME) {
+            return ctx.body = {
+                data: {
+                  isLogin: false,
+                },
+                errorCode: '401',
+                errorMessage: '请先登录！',
+                success: true,
+              }
+        }
         const result = await new UserService().currentUser();
         
         return ctx.body = result;

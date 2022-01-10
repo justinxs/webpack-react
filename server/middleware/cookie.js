@@ -1,6 +1,7 @@
 
 module.exports = async (ctx, next) => {
     const userName = ctx.cookies.get('USER_NAME');
+    ctx.USER_NAME = userName;
     
     await next();
 
