@@ -182,5 +182,20 @@ module.exports = {
             template: path.resolve(__dirname, '../static/index.html'),
             favicon: path.resolve(__dirname, '../static/favicon.ico')
         }),
-    ]
+    ],
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+            cacheGroups: {
+                vendor: {
+                    name: "vendor", // node_modules内的依赖库
+                    chunks: "initial", // 只打包初始时依赖，异步引入单独打包
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: 10,
+                    minChunks: 1,
+                    minSize: 0
+                },
+            }
+        },
+    },
 };
